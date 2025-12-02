@@ -1,0 +1,25 @@
+﻿@model List<BookRadar.Models.LibroResultadoViewModel>
+
+<h2>Resultados de la búsqueda</h2>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Título</th>
+            <th>Año de publicación</th>
+            <th>Editorial</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var libro in Model)
+        {
+            <tr>
+                <td>@libro.Titulo</td>
+                <td>@libro.AnioPublicacion</td>
+                <td>@libro.Editorial</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<a class="btn btn-secondary mt-3" href="/Books/Buscar">Nueva búsqueda</a>

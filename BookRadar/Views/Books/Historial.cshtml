@@ -1,0 +1,41 @@
+﻿@model List<BookRadar.Models.HistorialBusqueda>
+
+@{
+    ViewData["Title"] = "Historial de búsquedas";
+}
+
+<h2>Historial de búsquedas</h2>
+
+@if (Model == null || !Model.Any())
+{
+    <p>No hay búsquedas registradas aún.</p>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Autor buscado</th>
+                <th>Título</th>
+                <th>Año publicación</th>
+                <th>Editorial</th>
+                <th>Fecha de búsqueda</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.Autor</td>
+                    <td>@item.Titulo</td>
+                    <td>@item.AnioPublicacion</td>
+                    <td>@item.Editorial</td>
+                    <td>@item.FechaBusqueda</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+<a class="btn btn-secondary mt-3" href="/Books/Buscar">Nueva búsqueda</a>
+
