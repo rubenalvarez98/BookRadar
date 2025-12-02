@@ -1,0 +1,31 @@
+﻿@model BookRadar.Models.BuscarAutorViewModel
+
+@{
+    ViewData["Title"] = "Buscar libros por autor";
+}
+
+<h1 class="mb-4 text-center">Buscar libros por autor</h1>
+
+<div class="card shadow-sm">
+    <div class="card-body">
+        <form asp-action="Buscar" method="post">
+            @Html.AntiForgeryToken()
+
+            <div class="mb-3">
+                <label asp-for="Autor" class="form-label"></label>
+                <input asp-for="Autor" class="form-control" placeholder="Ej: Tolkien" />
+                <span asp-validation-for="Autor" class="text-danger"></span>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Buscar</button>
+            <a href="/Books/Historial" class="btn btn-outline-secondary ms-2">
+                Ver historial de búsquedas
+            </a>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+
