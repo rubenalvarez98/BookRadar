@@ -40,12 +40,66 @@ Antes de comenzar, necesitas:
 
 ---
 
-Base de datos
+1.Base de datos
 
-Crear la base de datos
+1.1 Crear la base de datos
 
 En SQL Server Management Studio:
 
 sql
 CREATE DATABASE BookRadarDb;
 GO
+
+1.2 Crear la tabla
+
+CREATE TABLE HistorialBusquedas (
+    Id INT IDENTITY(1,1) PRIMARY KEY,
+    Autor NVARCHAR(200) NOT NULL,
+    Titulo NVARCHAR(500) NULL,
+    AnioPublicacion INT NULL,
+    Editorial NVARCHAR(300) NULL,
+    FechaBusqueda DATETIME2 NOT NULL DEFAULT SYSDATETIME()
+);
+
+1.3 Crear el procedimiento almacenado
+CREATE PROCEDURE sp_InsertHistorialBusqueda
+    @Autor NVARCHAR(200),
+    @Titulo NVARCHAR(500),
+    @AnioPublicacion INT = NULL,
+    @Editorial NVARCHAR(300) = NULL
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    IF EXISTS (
+        SELECT 1
+        FROM HistorialBusquedas
+        WHERE Autor = @Autor
+          AND Titulo = @Titulo
+          AND ISNULL(AnioPublicacion, -1) = ISNULL(@AnioPublicacion, -1)
+          AND ISNULL(Editorial, '') = ISNULL(@Editorial, '')
+          AND FechaBusqueda >= DATEADD(MINUTE, -1, SYSDATETIME())
+    )
+    BEGIN
+        RETURN;
+    END
+
+    INSERT INTO HistorialBusquedas (Autor, Titulo, AnioPublicacion, Editorial, FechaBusqueda)
+    VALUES (@Autor, @Titulo, @AnioPublicacion, @Editorial, SYSDATETIME());
+END;
+
+2. Clonar el repositorio.
+
+git clone https://github.com/rubenalvarez98/BookRadar.git
+
+3. Configurar la conexión a la base de datos desde el proyecto
+	
+	 En appsettings.json, ajustar el nombre del servidor SQL si es necesario:
+
+	"ConnectionStrings": {
+  "DefaultConnection": "Server=TU_SERVIDOR_SQL;Database=BookRadarDb;Trusted_Connection=True;MultipleActiveResultSets=true;TrustServerCertificate=True"
+}
+
+
+
+ 
