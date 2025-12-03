@@ -1,0 +1,41 @@
+//Crear  la tabla//
+USE BookRadarDb;
+GO
+
+CREATE TABLE HistorialBusquedas (
+    Id INT IDENTITY(1,1) PRIMARY KEY,
+    Autor NVARCHAR(200) NOT NULL,
+    Titulo NVARCHAR(500) NOT NULL,
+    AnioPublicacion INT NULL,
+    Editorial NVARCHAR(300) NULL,
+    FechaBusqueda DATETIME2 NOT NULL DEFAULT (SYSDATETIME())
+);
+
+//Procedimiento almacenado//
+
+CREATE PROCEDURE sp_InsertHistorialBusqueda
+    @Autor NVARCHAR(200),
+    @Titulo NVARCHAR(500),
+    @AnioPublicacion INT = NULL,
+    @Editorial NVARCHAR(300) = NULL
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    IF EXISTS (
+        SELECT 1
+        FROM HistorialBusquedas
+        WHERE Autor = @Autor
+          AND Titulo = @Titulo
+          AND ISNULL(AnioPublicacion, -1) = ISNULL(@AnioPublicacion, -1)
+          AND ISNULL(Editorial, '') = ISNULL(@Editorial, '')
+          AND FechaBusqueda >= DATEADD(MINUTE, -1, SYSDATETIME())
+    )
+    BEGIN
+        RETURN;
+    END
+
+    INSERT INTO HistorialBusquedas (Autor, Titulo, AnioPublicacion, Editorial, FechaBusqueda)
+    VALUES (@Autor, @Titulo, @AnioPublicacion, @Editorial, SYSDATETIME());
+END;
+GO
